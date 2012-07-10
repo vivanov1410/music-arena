@@ -19,7 +19,7 @@
     return app.use(exp.methodOverride());
   });
 
-  host = 'https://app5797503.heroku:iloveyou123@app5797503.heroku.cloudant.com';
+  host = 'https://exilium.iriscouch.com';
 
   port = 80;
 
