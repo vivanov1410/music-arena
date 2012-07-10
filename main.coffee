@@ -16,7 +16,7 @@ app.configure () ->
     app.use exp.bodyParser()
     app.use exp.methodOverride()
 
-host = 'https://exilium.iriscouch.com'
+host = 'http://exilium.iriscouch.com'
 port = 5984
     
 conn = new cradle.Connection host, port
