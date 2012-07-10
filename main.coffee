@@ -15,9 +15,12 @@ app.configure () ->
     app.use exp.logger()
     app.use exp.bodyParser()
     app.use exp.methodOverride()
+
+host = 'exilium.iriscouch.com'
+port = 5984
     
-conn = new cradle.Connection();
-db = conn.database 'musicarena';
+conn = new cradle.Connection host, port
+db = conn.database 'musicarena'
 
 # Routing and View Rendering
 app.get '/', (req, res) ->
