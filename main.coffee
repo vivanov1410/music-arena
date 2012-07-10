@@ -16,8 +16,8 @@ app.configure () ->
     app.use exp.bodyParser()
     app.use exp.methodOverride()
 
-host = 'http://exilium.iriscouch.com'
-port = 5984
+host = 'https://app5797503.heroku:iloveyou123@app5797503.heroku.cloudant.com'
+port = 80
     
 conn = new cradle.Connection host, port
 db = conn.database 'musicarena'
