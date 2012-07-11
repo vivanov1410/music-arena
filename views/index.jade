@@ -1,2 +1,16 @@
+script(src='/socket.io/socket.io.js')
+script(src='http://code.jquery.com/jquery-latest.js')
+script(src='/javascripts/chat.js')
+
 h1= title
-p Welcome to #{title}
+p Welcome, #{username}
+div#usersTab
+    b USERS
+    div#users
+
+div#conversationTab
+  div#conversation
+  input(id='data')
+  input(type='button', id='datasend', value='send')
+  
+input(type='hidden', id='username', value='#{username}')

@@ -5,11 +5,18 @@ express = require 'express'
 stylus = require 'stylus'
 routes = require './routes'
 cradle = require 'cradle'
-io = require 'socket.io'
+socket = require 'socket.io'
 
 # Creating a Server
 app = module.exports = express.createServer()
-io.listen(app)
+io = socket.listen(app)
+
+# Sockets.io Configuration for Heroku only
+if app.settings.env is 'production'
+    io.configure () ->
+        io.set 'transports', ['xhr-polling']
+        io.set 'polling duration', 10
+
 
 # App Configuration
 app.configure () ->
@@ -52,12 +59,12 @@ app.post '/login', (req, res) ->
     # check if there is a corresponding user in db
     db.get data.username, (err, doc) ->
         if not doc
-            res.render 'login', {flash: 'No user found', title: 'Music Arena. Log in'}
+            res.render 'login', { flash: 'No user found', title: 'Music Arena. Log in' }
         else
             if doc.password isnt data.password
-                res.render 'login', {flash: 'Wrong password!', title: 'Music Arena. Log in'}
+                res.render 'login', { flash: 'Wrong password!', title: 'Music Arena. Log in' }
             else
-                res.render 'index', {flash: 'Logged in!', title: 'Music Arena'}
+                res.render 'index', { title: 'Music Arena', username: data.username }
     
 app.post '/register', (req, res) ->
     data = req.body
@@ -65,15 +72,44 @@ app.post '/register', (req, res) ->
     # check if username is in use
     db.get data.username, (err, doc) ->
         if doc
-            res.render 'login', {flash: 'Username is in use', title: 'Music Arena. Log in'}
+            res.render 'login', { flash: 'Username is in use', title: 'Music Arena. Log in' }
         else
             if data.password isnt data.confirm_password
-                res.render 'login', {flash: 'Password does not match', title: 'Music Arena. Log in'}
+                res.render 'login', { flash: 'Password does not match', title: 'Music Arena. Log in' }
             else
                 delete data.confirm_password;
                 db.save data.username, data, (db_err, db_res) ->
-                    res.render 'login', {flash: 'User created', title: 'Music Arena. Log in'}
+                    res.render 'login', { flash: 'User created', title: 'Music Arena. Log in' }
 
 # Run App
 port = process.env.PORT or 9294
 app.listen port, -> console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+
+# Sockets Part
+# usernames which are currently connected to the chat
+usernames = {}
+io.sockets.on 'connection', (socket) ->
+    # when the client emits 'sendchat', this listens and executes
+    socket.on 'sendchat', (data) ->
+        io.sockets.emit 'updatechat', socket.username, data
+
+    # when the client emits 'adduser', this listens and executes
+    socket.on 'adduser', (username) ->
+        # we store the username in the socket session for this client
+        socket.username = username
+        # add the client's username to the global list
+        usernames[username] = username
+        # echo to client they've connected
+        socket.emit 'updatechat', 'SERVER', 'you have connected'
+        # echo globally (all clients) that a person has connected
+        socket.broadcast.emit 'updatechat', 'SERVER', username + ' has connected'
+        # update the list of users in chat, client-side
+        io.sockets.emit 'updateusers', usernames
+
+    socket.on 'disconnect', ->
+        # remove the username from global usernames list
+        delete usernames[socket.username];
+        # update list of users in chat, client-side
+        io.sockets.emit 'updateusers', usernames
+        # echo globally that this client has left
+        socket.broadcast.emit 'updatechat', 'SERVER', socket.username + ' has disconnected'

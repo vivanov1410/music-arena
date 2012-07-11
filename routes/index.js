@@ -3,7 +3,7 @@
 
   exports.index = function(req, res) {
     return res.render('index', {
-      title: 'Music Arena.Home'
+      title: 'Music Arena'
     });
   };
 
