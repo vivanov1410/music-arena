@@ -23,7 +23,6 @@
       io.set('transports', ['xhr-polling']);
       return io.set('polling duration', 10);
     });
-    socket = new io.Socket();
   }
 
   app.configure(function() {

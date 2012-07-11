@@ -16,7 +16,7 @@ if app.settings.env is 'production'
     io.configure () ->
         io.set 'transports', ['xhr-polling']
         io.set 'polling duration', 10
-    socket = new io.Socket()
+    #@socket = new io.Socket()
     
 # App Configuration
 app.configure () ->
