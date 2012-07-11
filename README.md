@@ -20,3 +20,4 @@ Technology:
 Folder Structure:
 1. The /views folder contains all the template files using the Jade Template Engine
 2. The /public folder contains all the static content; images, client-side JavaScripts and stylesheets
+
