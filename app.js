@@ -45,7 +45,8 @@
       dumpExceptions: true,
       showStack: true
     }));
-    return app.set('db-uri', 'musicarena');
+    app.set('db-uri', 'localhost:5984');
+    return app.set('db-name', 'musicarena');
   });
 
   app.configure('production', function() {
@@ -53,12 +54,13 @@
       dumpExceptions: true,
       showStack: true
     }));
-    return app.set('db-uri', 'https://exilium.iriscouch.com/musicarena');
+    app.set('db-uri', 'http://exilium.iriscouch.com');
+    return app.set('db-name', 'musicarena');
   });
 
-  conn = new cradle.Connection();
+  conn = new cradle.Connection(app.set('db-uri'));
 
-  db = conn.database(app.set('db-uri'));
+  db = conn.database(app.set('db-name'));
 
   app.get('/', routes.login);
 

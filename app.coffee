@@ -28,16 +28,18 @@ app.configure () ->
     
 app.configure 'development', ->
     app.use express.errorHandler { dumpExceptions: true, showStack: true }
-    app.set 'db-uri', 'musicarena'
+    app.set 'db-uri', 'localhost:5984'
+    app.set 'db-name', 'musicarena'
 
 app.configure 'production', ->
     app.use express.errorHandler { dumpExceptions: true, showStack: true }
     #host = 'https://app5797503.heroku:iloveyou123@app5797503.heroku.cloudant.com'
-    app.set 'db-uri', 'https://exilium.iriscouch.com/musicarena'
+    app.set 'db-uri', 'http://exilium.iriscouch.com'
+    app.set 'db-name', 'musicarena'
 
 # DB Connection    
-conn = new cradle.Connection()
-db = conn.database app.set('db-uri')
+conn = new cradle.Connection app.set 'db-uri'
+db = conn.database app.set 'db-name'
 
 # Routing and View Rendering
 app.get '/', routes.login
