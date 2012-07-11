@@ -9,6 +9,7 @@ socket = require 'socket.io'
 
 # Creating a Server
 app = module.exports = express.createServer()
+io = socket.listen(app)
 
 # Sockets.io Configuration for Heroku only
 if app.settings.env is 'production'
@@ -83,7 +84,6 @@ app.post '/register', (req, res) ->
 # Run App
 port = process.env.PORT or 9294
 app.listen port, -> console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
-io = socket.listen(app)
 
 # Sockets Part
 # usernames which are currently connected to the chat
