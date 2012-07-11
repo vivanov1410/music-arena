@@ -1,4 +1,4 @@
-socket = io.connect 'http://localhost:9294'
+socket = io.connect  window.location.hostname
 
 socket.on 'connect', ->
   socket.emit 'adduser', $('#username').val()
